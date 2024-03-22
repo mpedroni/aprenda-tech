@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:tc:mysql:8.3.0:///aprendatech_test
+    username: mysql
+    password: mysql
+  jpa:
+    hibernate:
+      ddl-auto: none
