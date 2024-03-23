@@ -1,35 +1,20 @@
 package com.mpedroni.aprendatech.api;
 
+import com.mpedroni.aprendatech.ControllerTest;
 import com.mpedroni.aprendatech.domain.users.usecases.CreateUserUseCase;
-import com.mpedroni.aprendatech.infra.config.security.SecurityConfig;
 import com.mpedroni.aprendatech.infra.users.api.UserController;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 
-@WebMvcTest(controllers = UserController.class)
-@Import(SecurityConfig.class)
+@ControllerTest(controllers = UserController.class)
 public class UserControllerUnitTest {
-    @Autowired
-    MockMvc mvc;
-
     @MockBean
     CreateUserUseCase createUserUseCase;
-
-    @BeforeEach
-    void setupRestAssured() {
-        RestAssuredMockMvc.mockMvc(mvc);
-    }
 
     @Test
     void createsAStudent() {
