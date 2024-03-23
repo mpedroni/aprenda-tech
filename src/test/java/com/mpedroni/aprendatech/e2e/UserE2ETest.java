@@ -1,11 +1,13 @@
 package com.mpedroni.aprendatech.e2e;
 
+import com.mpedroni.aprendatech.E2ETest;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.matchesPattern;
 
-class UserE2ETest extends E2ETest {
+@E2ETest
+class UserE2ETest {
     @Test
     void createsAStudent() {
         var name = "John Doe";
