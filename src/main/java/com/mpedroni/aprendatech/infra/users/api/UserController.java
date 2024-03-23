@@ -1,6 +1,7 @@
 package com.mpedroni.aprendatech.infra.users.api;
 
 import com.mpedroni.aprendatech.domain.users.usecases.CreateUserUseCase;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody CreateUserRequest request) {
         var user = createUserUseCase.execute(
                 request.name(),
                 request.username(),
