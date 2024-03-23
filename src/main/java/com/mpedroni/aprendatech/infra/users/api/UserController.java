@@ -1,8 +1,6 @@
 package com.mpedroni.aprendatech.infra.users.api;
 
-import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
-import com.mpedroni.aprendatech.infra.users.persistence.UserJpaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mpedroni.aprendatech.domain.users.usecases.CreateUserUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,20 +12,21 @@ import java.net.URI;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
-    private UserJpaRepository repository;
+    private final CreateUserUseCase createUserUseCase;
+
+    public UserController(CreateUserUseCase createUserUseCase) {
+        this.createUserUseCase = createUserUseCase;
+    }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody CreateUserRequest request) {
-        var user = new UserJpaEntity(
+        var user = createUserUseCase.execute(
                 request.name(),
                 request.username(),
                 request.email(),
                 request.password(),
                 request.role()
         );
-
-        repository.save(user);
 
         URI location = URI.create("/users/" + user.getId());
 
