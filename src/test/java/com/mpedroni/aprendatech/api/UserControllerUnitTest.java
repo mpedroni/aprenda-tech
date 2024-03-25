@@ -1,6 +1,8 @@
 package com.mpedroni.aprendatech.api;
 
 import com.mpedroni.aprendatech.ControllerTest;
+import com.mpedroni.aprendatech.domain.users.exceptions.EmailAlreadyExistsException;
+import com.mpedroni.aprendatech.domain.users.exceptions.UsernameAlreadyExistsException;
 import com.mpedroni.aprendatech.domain.users.usecases.CreateUserUseCase;
 import com.mpedroni.aprendatech.infra.users.api.UserController;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
@@ -97,6 +99,46 @@ public class UserControllerUnitTest {
         .then()
             .statusCode(400)
             .body("errors", hasItem("Role must be STUDENT, INSTRUCTOR or ADMIN."));
+    }
+
+    @Test
+    void throwsAnErrorWhenCreatingAUserWithAnExistingUsername() {
+        var body = new CreateUserRequestBody();
+
+        var name = body.name();
+        var username = body.username();
+        var email = body.email();
+        var password = body.password();
+        var role = body.role();
+
+        when(createUserUseCase.execute(name, username, email, password, role))
+            .thenThrow(new UsernameAlreadyExistsException(username));
+
+        givenCreateUserRequest(body.build())
+        .then()
+            .statusCode(409)
+            .body("status", is(409))
+            .body("message", is("A user with the username \"%s\" already exists.".formatted(username)));
+    }
+
+    @Test
+    void throwsAnErrorWhenCreatingAUserWithAnExistingEmail() {
+        var body = new CreateUserRequestBody();
+
+        var name = body.name();
+        var username = body.username();
+        var email = body.email();
+        var password = body.password();
+        var role = body.role();
+
+        when(createUserUseCase.execute(name, username, email, password, role))
+                .thenThrow(new EmailAlreadyExistsException(email));
+
+        givenCreateUserRequest(body.build())
+                .then()
+                .statusCode(409)
+                .body("status", is(409))
+                .body("message", is("A user with the email \"%s\" already exists.".formatted(email)));
     }
 
     static MockMvcResponse givenCreateUserRequest(String body) {

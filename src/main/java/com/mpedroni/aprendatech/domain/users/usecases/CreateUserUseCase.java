@@ -1,5 +1,7 @@
 package com.mpedroni.aprendatech.domain.users.usecases;
 
+import com.mpedroni.aprendatech.domain.users.exceptions.EmailAlreadyExistsException;
+import com.mpedroni.aprendatech.domain.users.exceptions.UsernameAlreadyExistsException;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaRepository;
 
@@ -11,6 +13,14 @@ public class CreateUserUseCase {
     }
 
     public UserJpaEntity execute(String name, String username, String email, String password, String role) {
+        repository.findByUsername(username).ifPresent(user -> {
+            throw new UsernameAlreadyExistsException(username);
+        });
+
+        repository.findByEmail(email).ifPresent(user -> {
+            throw new EmailAlreadyExistsException(email);
+        });
+
         var user = new UserJpaEntity(
                 name,
                 username,
