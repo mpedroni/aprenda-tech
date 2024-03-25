@@ -1,8 +1,16 @@
+application:
+  security:
+    jwt:
+      secret: 51a5339157f8ad50b6d77600e02df6c47c12e6ee8826aa02e5eac2ac3b0231e0
+      expiration-in-minutes: 1440 # 24 hours
+
 spring:
   datasource:
     url: jdbc:tc:mysql:8.3.0:///aprendatech_test
     username: mysql
     password: mysql
+    driver-class-name:
+
   jpa:
     hibernate:
       ddl-auto: none
