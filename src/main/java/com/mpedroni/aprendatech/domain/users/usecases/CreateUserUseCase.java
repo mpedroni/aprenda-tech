@@ -12,7 +12,13 @@ public class CreateUserUseCase {
         this.repository = repository;
     }
 
-    public UserJpaEntity execute(String name, String username, String email, String password, String role) {
+    public UserJpaEntity execute(CreateUserCommand command) {
+        var name = command.name();
+        var username = command.username();
+        var email = command.email();
+        var password = command.password();
+        var role = command.role();
+
         repository.findByUsername(username).ifPresent(user -> {
             throw new UsernameAlreadyExistsException(username);
         });

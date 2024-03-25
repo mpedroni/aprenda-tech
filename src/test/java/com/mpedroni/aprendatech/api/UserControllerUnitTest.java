@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ControllerTest(controllers = UserController.class)
@@ -23,13 +24,7 @@ public class UserControllerUnitTest {
     void createsAStudent() {
         var body = new CreateUserRequestBody();
 
-        var name = body.name();
-        var username = body.username();
-        var email = body.email();
-        var password = body.password();
-        var role = body.role();
-
-        when(createUserUseCase.execute(name, username, email, password, role))
+        when(createUserUseCase.execute(any()))
             .thenReturn(
                 UserJpaEntity.from(1L, body.name(), body.username(), body.email(), body.password(), body.role()
             )
@@ -105,40 +100,28 @@ public class UserControllerUnitTest {
     void throwsAnErrorWhenCreatingAUserWithAnExistingUsername() {
         var body = new CreateUserRequestBody();
 
-        var name = body.name();
-        var username = body.username();
-        var email = body.email();
-        var password = body.password();
-        var role = body.role();
-
-        when(createUserUseCase.execute(name, username, email, password, role))
-            .thenThrow(new UsernameAlreadyExistsException(username));
+        when(createUserUseCase.execute(any()))
+            .thenThrow(new UsernameAlreadyExistsException(body.username()));
 
         givenCreateUserRequest(body.build())
         .then()
             .statusCode(409)
             .body("status", is(409))
-            .body("message", is("A user with the username \"%s\" already exists.".formatted(username)));
+            .body("message", is("A user with the username \"%s\" already exists.".formatted(body.username())));
     }
 
     @Test
     void throwsAnErrorWhenCreatingAUserWithAnExistingEmail() {
         var body = new CreateUserRequestBody();
 
-        var name = body.name();
-        var username = body.username();
-        var email = body.email();
-        var password = body.password();
-        var role = body.role();
-
-        when(createUserUseCase.execute(name, username, email, password, role))
-                .thenThrow(new EmailAlreadyExistsException(email));
+        when(createUserUseCase.execute(any()))
+                .thenThrow(new EmailAlreadyExistsException(body.email()));
 
         givenCreateUserRequest(body.build())
                 .then()
                 .statusCode(409)
                 .body("status", is(409))
-                .body("message", is("A user with the email \"%s\" already exists.".formatted(email)));
+                .body("message", is("A user with the email \"%s\" already exists.".formatted(body.email())));
     }
 
     static MockMvcResponse givenCreateUserRequest(String body) {

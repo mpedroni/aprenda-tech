@@ -1,5 +1,6 @@
 package com.mpedroni.aprendatech.infra.users.api;
 
+import com.mpedroni.aprendatech.domain.users.usecases.CreateUserCommand;
 import com.mpedroni.aprendatech.domain.users.usecases.CreateUserUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,14 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CreateUserRequest request) {
-        var user = createUserUseCase.execute(
+        var aCommand = CreateUserCommand.with(
                 request.name(),
                 request.username(),
                 request.email(),
                 request.password(),
                 request.role()
         );
+        var user = createUserUseCase.execute(aCommand);
 
         URI location = URI.create("/users/" + user.getId());
 
