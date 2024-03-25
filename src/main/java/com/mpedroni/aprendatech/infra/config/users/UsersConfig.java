@@ -5,14 +5,15 @@ import com.mpedroni.aprendatech.infra.users.persistence.UserJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class UsersConfig {
     @Bean
-    @Autowired
     public CreateUserUseCase createUserUseCase(
-            UserJpaRepository repository
+            UserJpaRepository repository,
+            PasswordEncoder encoder
     ) {
-        return new CreateUserUseCase(repository);
+        return new CreateUserUseCase(repository, encoder);
     }
 }

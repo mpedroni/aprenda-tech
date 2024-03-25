@@ -10,10 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Testcontainers
@@ -22,13 +28,33 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class CreateUserUseCaseIntegrationTest {
     @Autowired
     UserJpaRepository userRepository;
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     CreateUserUseCase sut;
 
     @BeforeEach
     void setup() {
         userRepository.deleteAll();
-        sut = new CreateUserUseCase(userRepository);
+        sut = new CreateUserUseCase(userRepository, encoder);
+    }
+
+    @Test
+    void createsAUserWithAnEncryptedPassword() {
+        var name = "John Doe";
+        var username = "johndoe";
+        var email = "john@doe.com";
+        var password = "password@123";
+        var role = "STUDENT";
+        var aCommand = CreateUserCommand.with(name, username, email, password, role);
+
+        sut.execute(aCommand);
+
+        var user = userRepository.findByUsername(username).orElseThrow();
+
+        assertThat(user.getName(), is(equalTo(name)));
+        assertThat(user.getUsername(), is(equalTo(username)));
+        assertThat(user.getEmail(), is(equalTo(email)));
+        assertTrue(encoder.matches(password, user.getPassword()));
     }
 
     @Test
