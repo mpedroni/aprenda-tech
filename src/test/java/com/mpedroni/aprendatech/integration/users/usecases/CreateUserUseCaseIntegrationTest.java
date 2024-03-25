@@ -1,5 +1,6 @@
 package com.mpedroni.aprendatech.integration.users.usecases;
 
+import com.mpedroni.aprendatech.PersistenceTest;
 import com.mpedroni.aprendatech.domain.users.exceptions.EmailAlreadyExistsException;
 import com.mpedroni.aprendatech.domain.users.exceptions.UsernameAlreadyExistsException;
 import com.mpedroni.aprendatech.domain.users.usecases.CreateUserCommand;
@@ -8,12 +9,8 @@ import com.mpedroni.aprendatech.infra.users.persistence.UserJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -21,15 +18,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataJpaTest
-@Testcontainers
-@ActiveProfiles("test-e2e")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@PersistenceTest
 public class CreateUserUseCaseIntegrationTest {
     @Autowired
     UserJpaRepository userRepository;
     PasswordEncoder encoder = new BCryptPasswordEncoder();
-
     CreateUserUseCase sut;
 
     @BeforeEach
