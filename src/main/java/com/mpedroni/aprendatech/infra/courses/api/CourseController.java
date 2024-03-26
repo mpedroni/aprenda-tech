@@ -2,6 +2,7 @@ package com.mpedroni.aprendatech.infra.courses.api;
 
 import com.mpedroni.aprendatech.domain.courses.usecases.CreateCourseCommand;
 import com.mpedroni.aprendatech.domain.courses.usecases.CreateCourseUseCase;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateCourseRequest request) {
+    public ResponseEntity<?> create(@Valid @RequestBody CreateCourseRequest request) {
         var aCommand = CreateCourseCommand.with(
                 request.name(),
                 request.code(),
