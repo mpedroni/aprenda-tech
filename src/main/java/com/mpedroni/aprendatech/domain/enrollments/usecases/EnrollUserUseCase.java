@@ -1,6 +1,8 @@
 package com.mpedroni.aprendatech.domain.enrollments.usecases;
 
 import com.mpedroni.aprendatech.domain.courses.exceptions.CourseNotFoundException;
+import com.mpedroni.aprendatech.domain.enrollments.exceptions.CourseInactiveException;
+import com.mpedroni.aprendatech.domain.enrollments.exceptions.UserAlreadyEnrolledException;
 import com.mpedroni.aprendatech.domain.users.exceptions.UserNotFoundException;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaRepository;
 import com.mpedroni.aprendatech.infra.enrollments.persistence.EnrollmentJpaEntity;
@@ -24,6 +26,16 @@ public class EnrollUserUseCase {
 
         var course = courseRepository.findById(command.courseId())
                 .orElseThrow(() -> new CourseNotFoundException(command.courseId()));
+
+        if (!course.isActive()) {
+            throw new CourseInactiveException(course.getCode());
+        }
+
+        var existingEnrollment = enrollmentRepository.findByUserIdAndCourseId(user.getId(), course.getId());
+
+        if (existingEnrollment.isPresent()) {
+            throw new UserAlreadyEnrolledException(user.getUsername(), course.getCode());
+        }
 
         var enrollment = new EnrollmentJpaEntity(course.getId(), user.getId());
 

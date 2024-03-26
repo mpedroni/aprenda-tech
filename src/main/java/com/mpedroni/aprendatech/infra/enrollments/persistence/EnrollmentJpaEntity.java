@@ -39,4 +39,38 @@ public class EnrollmentJpaEntity {
         this.userId = userId;
         this.enrolledAt = LocalDateTime.now();
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public LocalDateTime getEnrolledAt() {
+        return enrolledAt;
+    }
+
+    public UserJpaEntity getUser() {
+        return user;
+    }
+
+    public CourseJpaEntity getCourse() {
+        return course;
+    }
+
+    @Override
+    public String toString() {
+        return "EnrollmentJpaEntity{" +
+                "id=" + id +
+                ", courseId=" + courseId +
+                ", userId=" + userId +
+                ", enrolledAt=" + enrolledAt +
+                '}';
+    }
 }

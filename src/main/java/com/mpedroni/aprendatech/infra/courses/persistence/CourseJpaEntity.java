@@ -83,6 +83,10 @@ public class CourseJpaEntity {
         return instructor;
     }
 
+    public boolean isActive() {
+        return status.equals("ACTIVE");
+    }
+
     @Override
     public String toString() {
         return "CourseJpaEntity{" +
