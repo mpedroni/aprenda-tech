@@ -7,10 +7,7 @@ import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaEntity;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaRepository;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaRepository;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -19,7 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @PersistenceTest
-public class SearchCouseUseCaseIntegrationTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class SearchCourseUseCaseIntegrationTest {
     static UserJpaEntity anInstructor;
     static CourseJpaEntity javaCourse;
     static CourseJpaEntity dotnetCourse;
@@ -34,7 +32,7 @@ public class SearchCouseUseCaseIntegrationTest {
     SearchCourseUseCase sut;
 
     @BeforeAll
-    static void beforeAll(@Autowired UserJpaRepository userRepository, @Autowired CourseJpaRepository courseRepository) {
+    void beforeAll() {
         anInstructor = userRepository.save(new UserJpaEntity(
             "John Doe",
             "johndoe",
@@ -72,7 +70,7 @@ public class SearchCouseUseCaseIntegrationTest {
     }
 
     @AfterAll
-    static void afterAll(@Autowired UserJpaRepository userRepository, @Autowired CourseJpaRepository courseRepository) {
+    void afterAll() {
         courseRepository.deleteAll();
         userRepository.delete(anInstructor);
     }
