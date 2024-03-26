@@ -1,5 +1,6 @@
 package com.mpedroni.aprendatech.infra.api;
 
+import com.mpedroni.aprendatech.domain.courses.exceptions.CourseCodeAlreadyExistsException;
 import com.mpedroni.aprendatech.domain.users.exceptions.EmailAlreadyExistsException;
 import com.mpedroni.aprendatech.domain.users.exceptions.UserNotFoundException;
 import com.mpedroni.aprendatech.domain.users.exceptions.UsernameAlreadyExistsException;
@@ -60,6 +61,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {UserNotFoundException.class})
     public ResponseEntity<?> handleUserNotFound(UserNotFoundException ex, WebRequest request) {
         var status = HttpStatus.NOT_FOUND;
+
+        var body = new HashMap<>();
+        body.put("timestamp", System.currentTimeMillis());
+        body.put("status", status.value());
+        body.put("error", status.getReasonPhrase());
+        body.put("exception", ex.getClass().getSimpleName());
+        body.put("message", ex.getMessage());
+
+        return handleExceptionInternal(
+            ex,
+            body,
+            new HttpHeaders(),
+            status,
+            request
+        );
+    }
+
+    @ExceptionHandler(value = {CourseCodeAlreadyExistsException.class})
+    public ResponseEntity<?> handleCourseCodeAlreadyExists(CourseCodeAlreadyExistsException ex, WebRequest request) {
+        var status = HttpStatus.CONFLICT;
 
         var body = new HashMap<>();
         body.put("timestamp", System.currentTimeMillis());
