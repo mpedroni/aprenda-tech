@@ -26,7 +26,7 @@ public class CourseJpaEntity {
     @Column(name = "instructor_id")
     Long instructorId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id", insertable = false, updatable = false)
     UserJpaEntity instructor;
 

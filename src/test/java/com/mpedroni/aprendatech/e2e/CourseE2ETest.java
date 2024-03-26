@@ -93,4 +93,34 @@ public class CourseE2ETest {
         .then()
             .statusCode(204);
     }
+
+    @Test
+    void getPageOfCoursesWhenTheAuthenticatedUserIsAnAdmin() {
+        var anInstructor = new UserJpaEntity("John Doe", "johndoe", "john@doe.com", "pass", "INSTRUCTOR");
+        var anAdmin = new UserJpaEntity(
+                "Administrator",
+                "admin",
+                "admin@email.com",
+                "password@123",
+                "ADMIN"
+        );
+
+        var javaCourse = new CourseJpaEntity("Java", "JAVA", "Java course", anInstructor.getId());
+        var dotnetCourse = new CourseJpaEntity(".NET", "DOTNET", ".NET course", anInstructor.getId());
+
+        userRepository.saveAll(List.of(anInstructor, anAdmin));
+        courseRepository.saveAll(List.of(javaCourse, dotnetCourse));
+
+        var token = jwt.generate(anAdmin.getUsername(), anAdmin.getRole());
+
+        given()
+            .header("Authorization", "Bearer %s".formatted(token))
+            .param("page", 1)
+            .param("perPage", 1)
+        .when()
+            .get("/courses")
+        .then()
+            .log().all()
+            .statusCode(200);
+    }
 }
