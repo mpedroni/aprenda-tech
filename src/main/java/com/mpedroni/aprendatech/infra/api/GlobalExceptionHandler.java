@@ -1,6 +1,7 @@
 package com.mpedroni.aprendatech.infra.api;
 
 import com.mpedroni.aprendatech.domain.users.exceptions.EmailAlreadyExistsException;
+import com.mpedroni.aprendatech.domain.users.exceptions.UserNotFoundException;
 import com.mpedroni.aprendatech.domain.users.exceptions.UsernameAlreadyExistsException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,28 +37,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        var errors = ex.getBindingResult().getFieldErrors().stream()
-            .map(error -> error.getDefaultMessage())
-            .collect(Collectors.toList());
-
-        var body = new HashMap<>();
-        body.put("timestamp", System.currentTimeMillis());
-        body.put("status", status.value());
-        body.put("error", status.value());
-        body.put("exception", ex.getClass().getSimpleName());
-        body.put("errors", errors);
-
-        return handleExceptionInternal(
-            ex,
-            body,
-            headers,
-            status,
-            request
-        );
-    }
-
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity<?> handleBadCredentials(BadCredentialsException ex, WebRequest request) {
         var status = HttpStatus.UNAUTHORIZED;
@@ -75,6 +54,48 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             new HttpHeaders(),
             status,
             request
+        );
+    }
+
+    @ExceptionHandler(value = {UserNotFoundException.class})
+    public ResponseEntity<?> handleUserNotFound(UserNotFoundException ex, WebRequest request) {
+        var status = HttpStatus.NOT_FOUND;
+
+        var body = new HashMap<>();
+        body.put("timestamp", System.currentTimeMillis());
+        body.put("status", status.value());
+        body.put("error", status.getReasonPhrase());
+        body.put("exception", ex.getClass().getSimpleName());
+        body.put("message", ex.getMessage());
+
+        return handleExceptionInternal(
+            ex,
+            body,
+            new HttpHeaders(),
+            status,
+            request
+        );
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        var errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        var body = new HashMap<>();
+        body.put("timestamp", System.currentTimeMillis());
+        body.put("status", status.value());
+        body.put("error", status.value());
+        body.put("exception", ex.getClass().getSimpleName());
+        body.put("errors", errors);
+
+        return handleExceptionInternal(
+                ex,
+                body,
+                headers,
+                status,
+                request
         );
     }
 

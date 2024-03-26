@@ -2,12 +2,10 @@ package com.mpedroni.aprendatech.infra.users.api;
 
 import com.mpedroni.aprendatech.domain.users.usecases.CreateUserCommand;
 import com.mpedroni.aprendatech.domain.users.usecases.CreateUserUseCase;
+import com.mpedroni.aprendatech.domain.users.usecases.FindUserByUsernameUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -15,9 +13,11 @@ import java.net.URI;
 @RequestMapping("/users")
 public class UserController {
     private final CreateUserUseCase createUserUseCase;
+    private final FindUserByUsernameUseCase findUserByUsernameUseCase;
 
-    public UserController(CreateUserUseCase createUserUseCase) {
+    public UserController(CreateUserUseCase createUserUseCase, FindUserByUsernameUseCase findUserByUsernameUseCase) {
         this.createUserUseCase = createUserUseCase;
+        this.findUserByUsernameUseCase = findUserByUsernameUseCase;
     }
 
     @PostMapping
@@ -34,5 +34,12 @@ public class UserController {
         URI location = URI.create("/users/" + user.getId());
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<FindUserResponse> find(@PathVariable String username) {
+        var user = findUserByUsernameUseCase.execute(username);
+
+        return ResponseEntity.ok(FindUserResponse.from(user));
     }
 }
