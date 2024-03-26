@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ControllerTest(controllers = UserController.class)
-public class UserControllerUnitTest {
+public class UserControllerIntegrationTest {
     @MockBean
     CreateUserUseCase createUserUseCase;
 
