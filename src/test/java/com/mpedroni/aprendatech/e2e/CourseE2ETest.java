@@ -1,6 +1,7 @@
 package com.mpedroni.aprendatech.e2e;
 
 import com.mpedroni.aprendatech.E2ETest;
+import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaEntity;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaRepository;
 import com.mpedroni.aprendatech.infra.providers.JwtProvider;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
@@ -66,5 +67,30 @@ public class CourseE2ETest {
             .post("/courses")
         .then()
             .statusCode(201);
+    }
+
+    @Test
+    void inactivatesACourseWhenTheAuthenticatedUserIsAnAdmin() {
+        var anInstructor = new UserJpaEntity("John Doe", "johndoe", "john@doe.com", "pass", "INSTRUCTOR");
+        var anAdmin = new UserJpaEntity(
+                "Administrator",
+                "admin",
+                "admin@email.com",
+                "password@123",
+                "ADMIN"
+        );
+        var aCourse = new CourseJpaEntity("Java", "JAVA", "Java course", anInstructor.getId());
+
+        userRepository.saveAll(List.of(anInstructor, anAdmin));
+        courseRepository.save(aCourse);
+
+        var token = jwt.generate(anAdmin.getUsername(), anAdmin.getRole());
+
+        given()
+            .header("Authorization", "Bearer %s".formatted(token))
+        .when()
+            .delete("/courses/%s".formatted(aCourse.getCode()))
+        .then()
+            .statusCode(204);
     }
 }

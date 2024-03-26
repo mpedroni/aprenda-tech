@@ -42,6 +42,11 @@ public class CourseJpaEntity {
         this.createdAt = LocalDateTime.now();
     }
 
+    public void inactivate() {
+        this.status = "INACTIVE";
+        this.inactivatedAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
