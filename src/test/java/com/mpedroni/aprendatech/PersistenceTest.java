@@ -1,5 +1,6 @@
 package com.mpedroni.aprendatech;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.core.annotation.AliasFor;
@@ -13,6 +14,7 @@ import java.lang.annotation.*;
 @DataJpaTest
 @Testcontainers
 @ActiveProfiles("test-e2e")
+@ExtendWith(MySQLCleanUpExtension.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public @interface PersistenceTest {
     @AliasFor(annotation = DataJpaTest.class, attribute = "showSql")

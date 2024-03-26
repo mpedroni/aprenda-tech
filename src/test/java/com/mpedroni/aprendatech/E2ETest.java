@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 @SpringBootTest
 @ActiveProfiles("test-e2e")
 @ExtendWith(RestAssuredSetup.class)
+@ExtendWith(MySQLCleanUpExtension.class)
 @Testcontainers
 @AutoConfigureMockMvc
 public @interface E2ETest {
