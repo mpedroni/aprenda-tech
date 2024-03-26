@@ -1,8 +1,11 @@
 package com.mpedroni.aprendatech.infra.users.persistence;
 
+import com.mpedroni.aprendatech.infra.enrollments.persistence.EnrollmentJpaEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "User")
 @Table(name = "users")
@@ -19,6 +22,9 @@ public class UserJpaEntity {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "user")
+    private final List<EnrollmentJpaEntity> enrollments = new ArrayList<>();
 
     @Deprecated
     public UserJpaEntity() {}
@@ -106,5 +112,9 @@ public class UserJpaEntity {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public List<EnrollmentJpaEntity> getEnrollments() {
+        return enrollments;
     }
 }
