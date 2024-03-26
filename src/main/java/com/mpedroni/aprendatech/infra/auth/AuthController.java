@@ -33,8 +33,11 @@ public class AuthController {
                 .authenticate(usernamePasswordAuthenticationToken);
 
         var user = (User) authenticate.getPrincipal();
+        var role = user.getAuthorities().stream().findFirst().orElseThrow(
+                () -> new IllegalStateException("User with username \"%s\" has no roles".formatted(user.getUsername()))
+        );
 
-        var token = jwt.generate(user.getUsername());
+        var token = jwt.generate(user.getUsername(), role.getAuthority());
 
         return ResponseEntity.ok(new AuthResponse(token));
     }

@@ -16,7 +16,7 @@ public class JwtProvider {
     @Value("${application.security.jwt.expiration-in-minutes}")
     private int expirationInMinutes;
 
-    public String generate(String username) {
+    public String generate(String username, String role) {
         var now = Instant.now();
         var expiresAt = now.plus(expirationInMinutes, ChronoUnit.MINUTES);
 
@@ -24,6 +24,7 @@ public class JwtProvider {
                 .withIssuer("aprendatech")
                 .withClaim("username", username)
                 .withSubject(username)
+                .withClaim("role", role)
                 .withIssuedAt(now)
                 .withExpiresAt(expiresAt)
                 .sign(Algorithm.HMAC256(secret));
