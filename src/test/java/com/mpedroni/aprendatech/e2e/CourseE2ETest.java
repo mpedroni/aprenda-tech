@@ -5,6 +5,7 @@ import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaRepository;
 import com.mpedroni.aprendatech.infra.providers.JwtProvider;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +16,7 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 @E2ETest
 public class CourseE2ETest {
     @Autowired
-    CourseJpaRepository repo;
+    CourseJpaRepository courseRepository;
 
     @Autowired
     UserJpaRepository userRepository;
@@ -23,13 +24,19 @@ public class CourseE2ETest {
     @Autowired
     JwtProvider jwt;
 
+    @BeforeEach
+    void setup() {
+        courseRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @Test
     void createsACourseWhenTheAuthenticatedUserIsAnAdmin() {
         var anInstructor = new UserJpaEntity("John Doe", "johndoe", "john@doe.com", "pass", "INSTRUCTOR");
         var anAdmin = new UserJpaEntity(
                 "Administrator",
                 "admin",
-                "admin@username.com",
+                "admin@email.com",
                 "password@123",
                 "ADMIN"
         );
