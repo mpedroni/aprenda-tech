@@ -98,6 +98,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
+        var status = HttpStatus.BAD_REQUEST;
+
+        var body = new HashMap<>();
+        body.put("timestamp", System.currentTimeMillis());
+        body.put("status", status.value());
+        body.put("error", status.getReasonPhrase());
+        body.put("exception", ex.getClass().getSimpleName());
+        body.put("message", ex.getMessage());
+
+        return handleExceptionInternal(
+            ex,
+            body,
+            new HttpHeaders(),
+            status,
+            request
+        );
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         var errors = ex.getBindingResult().getFieldErrors().stream()

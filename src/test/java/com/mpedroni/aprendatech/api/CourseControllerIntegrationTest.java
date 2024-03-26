@@ -53,7 +53,7 @@ public class CourseControllerIntegrationTest {
             ));
     }
 
-    private class CreateCourseRequestBody {
+    static private class CreateCourseRequestBody {
         private String name = "Java Course";
         private String code = "java";
         private Long instructorId = 1L;
@@ -62,22 +62,6 @@ public class CourseControllerIntegrationTest {
         CreateCourseRequestBody withCode(String code) {
             this.code = code;
             return this;
-        }
-
-        public String name() {
-            return name;
-        }
-
-        public String code() {
-            return code;
-        }
-
-        public Long instructorId() {
-            return instructorId;
-        }
-
-        public String description() {
-            return description;
         }
 
         public String build() {
