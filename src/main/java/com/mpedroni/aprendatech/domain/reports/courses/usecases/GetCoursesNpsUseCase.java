@@ -1,5 +1,6 @@
 package com.mpedroni.aprendatech.domain.reports.courses.usecases;
 
+import com.mpedroni.aprendatech.domain.reports.utils.NpsCalculator;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,13 +17,9 @@ public class GetCoursesNpsUseCase {
 
         return courseRepository.findNpsByCourses(pageRequest).map(f -> {
             var total = f.promoters() + f.detractors() + f.passives();
-            var nps = calculateNps(f.promoters(), f.detractors(), total);
+            var nps = NpsCalculator.nps(f.promoters(), f.detractors(), total);
 
             return new CourseNps(f.courseId(), f.code(), f.promoters(), f.detractors(), f.passives(), total, nps);
         });
-    }
-
-    private int calculateNps(int promoters, int detractors, int total) {
-        return (int) Math.round((promoters - detractors) / (double) total * 100);
     }
 }

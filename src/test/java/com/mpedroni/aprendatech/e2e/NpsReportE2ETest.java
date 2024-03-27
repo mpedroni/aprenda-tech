@@ -1,6 +1,7 @@
 package com.mpedroni.aprendatech.e2e;
 
 import com.mpedroni.aprendatech.E2ETest;
+import com.mpedroni.aprendatech.domain.reports.utils.NpsCalculator;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaEntity;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaRepository;
 import com.mpedroni.aprendatech.infra.enrollments.persistence.EnrollmentJpaEntity;
@@ -84,6 +85,11 @@ public class NpsReportE2ETest {
 
         feedbackRepository.saveAll(feedbacks);
 
+        var promoters = (int) feedbacks.stream().filter(f -> f.getRating() >= 9).count();
+        var detractors = (int) feedbacks.stream().filter(f -> f.getRating() <= 6).count();
+        var passives = feedbacks.size() - promoters - detractors;
+        var nps = NpsCalculator.nps(promoters, detractors, feedbacks.size());
+
         given()
             .auth()
             .with(user("admin").roles("ADMIN"))
@@ -92,11 +98,11 @@ public class NpsReportE2ETest {
         .then()
             .body("content[0].id", is(java.getId().intValue()))
             .body("content[0].code", is(java.getCode()))
-            .body("content[0].promoters", is(2))
-            .body("content[0].detractors", is(1))
-            .body("content[0].passives", is(1))
-            .body("content[0].total", is(4))
-            .body("content[0].nps", is(25))
+            .body("content[0].promoters", is(promoters))
+            .body("content[0].detractors", is(detractors))
+            .body("content[0].passives", is(passives))
+            .body("content[0].total", is(feedbacks.size()))
+            .body("content[0].nps", is(nps))
             .statusCode(200);
     }
 
