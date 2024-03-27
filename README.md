@@ -8,9 +8,13 @@ Este repositório contém uma REST API para uma plataforma de cursos online.
 - Maven 3
 - Spring Boot 3
 - Spring Security 6
+
+
 - MySQL 8
 - Flyway
 - Docker & Docker Compose
+
+
 - JUnit 5
 - RestAssured
 - Testcontainers
