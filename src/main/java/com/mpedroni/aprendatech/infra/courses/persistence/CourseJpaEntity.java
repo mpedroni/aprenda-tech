@@ -83,6 +83,10 @@ public class CourseJpaEntity {
         return instructor;
     }
 
+    public void setInstructor(UserJpaEntity anInstructor) {
+        this.instructor = anInstructor;
+    }
+
     public boolean isActive() {
         return status.equals("ACTIVE");
     }
