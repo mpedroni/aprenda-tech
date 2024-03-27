@@ -35,6 +35,30 @@ public class FeedbackJpaEntity {
         this.createdAt = LocalDateTime.now();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
     @Override
     public String toString() {
         return "FeedbackJpaEntity{" +

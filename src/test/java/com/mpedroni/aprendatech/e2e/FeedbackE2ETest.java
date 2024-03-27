@@ -3,7 +3,8 @@ package com.mpedroni.aprendatech.e2e;
 import com.mpedroni.aprendatech.E2ETest;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaEntity;
 import com.mpedroni.aprendatech.infra.courses.persistence.CourseJpaRepository;
-import com.mpedroni.aprendatech.infra.feedbacks.persistence.FeedbackJpaRepository;
+import com.mpedroni.aprendatech.infra.enrollments.persistence.EnrollmentJpaEntity;
+import com.mpedroni.aprendatech.infra.enrollments.persistence.EnrollmentJpaRepository;
 import com.mpedroni.aprendatech.infra.providers.JwtProvider;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaEntity;
 import com.mpedroni.aprendatech.infra.users.persistence.UserJpaRepository;
@@ -21,6 +22,9 @@ public class FeedbackE2ETest {
     CourseJpaRepository courseRepository;
 
     @Autowired
+    EnrollmentJpaRepository enrollmentRepository;
+
+    @Autowired
     JwtProvider jwt;
 
     @Test
@@ -28,6 +32,8 @@ public class FeedbackE2ETest {
         var anInstructor = userRepository.save(new UserJpaEntity("John Doe", "johndoe", "john@doe.com", "pass", "INSTRUCTOR"));
         var aStudent = userRepository.save(new UserJpaEntity("Bruce Wayne", "batman", "bruce@wayne.bat", "pass", "STUDENT"));
         var aCourse = courseRepository.save(new CourseJpaEntity("Java for Beginners", "java", "Learn Java from scratch", anInstructor.getId()));
+
+        enrollmentRepository.save(new EnrollmentJpaEntity(aCourse.getId(), aStudent.getId()));
 
         var token = jwt.generate(aStudent.getUsername(), aStudent.getRole());
 
