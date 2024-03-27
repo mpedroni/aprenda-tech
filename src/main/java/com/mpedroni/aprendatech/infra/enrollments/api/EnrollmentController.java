@@ -2,6 +2,7 @@ package com.mpedroni.aprendatech.infra.enrollments.api;
 
 import com.mpedroni.aprendatech.domain.enrollments.usecases.EnrollUserCommand;
 import com.mpedroni.aprendatech.domain.enrollments.usecases.EnrollUserUseCase;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +22,7 @@ public class EnrollmentController {
 
     @PostMapping
     public ResponseEntity<?> create(
-            @RequestBody EnrollUserRequest request,
+            @Valid @RequestBody EnrollUserRequest request,
             Principal principal
     ) {
         var aCommand = EnrollUserCommand.with(request.courseId(), principal.getName());
