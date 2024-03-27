@@ -44,12 +44,14 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<?> search(
         @RequestParam(required = false) String status,
-        @RequestParam(required = false, defaultValue = "1") Integer page,
+        @RequestParam(required = false, defaultValue = "0") Integer page,
         @RequestParam(required = false, defaultValue = "10") Integer perPage
     ) {
         var command = SearchCourseCommand.with(page, perPage, status);
         var result = searchCourseUseCase.execute(command);
 
-        return ResponseEntity.ok(result);
+        var response = result.map(SearchCourseResponse::from);
+
+        return ResponseEntity.ok(response);
     }
 }

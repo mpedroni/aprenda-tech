@@ -115,12 +115,11 @@ public class CourseE2ETest {
 
         given()
             .header("Authorization", "Bearer %s".formatted(token))
-            .param("page", 1)
+            .param("page", 0)
             .param("perPage", 1)
         .when()
             .get("/courses")
         .then()
-            .log().all()
             .statusCode(200);
     }
 }
